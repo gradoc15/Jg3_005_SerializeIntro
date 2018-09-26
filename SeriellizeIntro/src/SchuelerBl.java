@@ -1,9 +1,9 @@
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -30,17 +30,14 @@ public class SchuelerBl
     public void save(File f)
     {
         try{
-            BufferedWriter bw = new BufferedWriter(new FileWriter(f));
+            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(f));
         
             for(Schueler s : klasse)
             {
-                bw.write(s.toString());
-                bw.write(";");
-                bw.write(s.getBday().toString());
-                bw.newLine();
+                oos.writeObject(s);
+
             }
-            
-            bw.flush();
+            oos.flush();
         }
         catch(Exception e)
         {
@@ -53,23 +50,14 @@ public class SchuelerBl
     public void load(File f)
     {
         try{
-            BufferedReader br = new BufferedReader(new FileReader(f));
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(f));
             
             String line = "";
             
-            while((line = br.readLine()) != null)
+            Object s = null;
+            while((s = ois.readObject()) != null)
             {
-                try{
-                    
-                
-                String[] p = line.split(";");
-                
-                add(new Schueler(p[0], LocalDate.parse(p[1])));
-                }
-                catch(Exception ex)
-                {
-                    System.out.println(line);
-                }
+                add((Schueler) s);
             }
         }
         
@@ -89,7 +77,7 @@ public class SchuelerBl
         bl.add(s1);
         bl.add(s2);
         
-        File f = new File("./data.csv");
+        File f = new File("./data.bin");
         
         try{
             bl.save(f);
