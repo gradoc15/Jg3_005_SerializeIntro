@@ -1,5 +1,8 @@
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.ArrayList;
 
 /*
@@ -23,7 +26,21 @@ public class SchuelerBl
     
     public void save(File f)
     {
+        try{
+            BufferedWriter bw = new BufferedWriter(new FileWriter(f));
         
+            for(Schueler s : klasse)
+            {
+                bw.write(s.toString());
+                bw.write(";");
+                bw.write(s.getBday().toString());
+                bw.newLine();
+            }
+        }
+        catch(Exception e)
+        {
+            
+        }
     }
     
     public void load(File f)
